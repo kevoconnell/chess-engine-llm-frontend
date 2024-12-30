@@ -80,7 +80,9 @@ function useGameTimer(gameState: GameState | null) {
     const interval = setInterval(() => {
       setTimeLeft((prev) => {
         const isWhiteTurn =
-          !gameState.lastMove || gameState.lastMove.length % 2 === 1;
+          gameState.botColor === "black"
+            ? !gameState.isOurTurn
+            : gameState.isOurTurn;
 
         return {
           white: prev.white - (isWhiteTurn ? 100 : 0),
