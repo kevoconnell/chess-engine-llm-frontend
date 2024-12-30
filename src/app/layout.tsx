@@ -3,8 +3,8 @@ import React from "react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Chess Teacher App",
-  description: "Learn chess with a Next.js 13+ app!",
+  title: "LLM Plays Chess",
+  description: "LLM Plays Chess",
 };
 
 export default function RootLayout({
