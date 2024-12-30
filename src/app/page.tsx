@@ -2,11 +2,25 @@
 // app/page.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import * as amplitude from "@amplitude/analytics-browser";
 import ChessBoard from "../components/chess_board";
+import { getUserId } from "@/utils/user-id";
 
 export default function HomePage() {
   const [gameState, setGameState] = useState<any | null>(null);
+
+  useEffect(() => {
+    amplitude.init(process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY || "");
+
+    amplitude.setUserId(getUserId());
+
+    amplitude.track("Page View", {
+      page: "Home",
+      path: "/",
+    });
+  }, []);
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 flex flex-col items-center justify-center p-4">
       <div className="max-w-4xl mx-auto text-center mb-8">
