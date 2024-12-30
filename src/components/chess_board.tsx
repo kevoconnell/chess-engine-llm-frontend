@@ -3,7 +3,7 @@
 
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Chess } from "chess.js";
 import { Chessboard } from "react-chessboard";
 
@@ -67,12 +67,35 @@ function useGameTimer(gameState: GameState | null) {
     black: 0,
   });
 
+  // Track the last move for increment handling
+  const lastMoveRef = useRef(gameState?.lastMove);
+
   useEffect(() => {
     // Initialize times when gameState changes
     if (gameState?.timeLeft) {
       setTimeLeft(gameState.timeLeft);
     }
-  }, [gameState?.timeLeft]);
+
+    // Handle 5-second increment when a move is made
+    if (gameState?.lastMove && gameState.lastMove !== lastMoveRef.current) {
+      lastMoveRef.current = gameState.lastMove;
+      setTimeLeft((prev) => {
+        const isWhiteTurn =
+          gameState.botColor === "black"
+            ? !gameState.isOurTurn
+            : gameState.isOurTurn;
+        return {
+          white: prev.white + (isWhiteTurn ? 0 : 5000), // Add 5 seconds (5000ms) to the player who just moved
+          black: prev.black + (isWhiteTurn ? 5000 : 0),
+        };
+      });
+    }
+  }, [
+    gameState?.timeLeft,
+    gameState?.lastMove,
+    gameState?.botColor,
+    gameState?.isOurTurn,
+  ]);
 
   useEffect(() => {
     if (!gameState || gameState.type === "error") return;
